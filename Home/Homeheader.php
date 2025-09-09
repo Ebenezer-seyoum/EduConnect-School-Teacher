@@ -5,7 +5,6 @@ include '../Edu-Connect/connection/connection.php';
 include '../Edu-Connect/connection/function.php';
 ?>
 <!doctype html>
-<html class="no-js" lang="zxx">
 
 <head>
     <meta charset="utf-8">
@@ -16,11 +15,17 @@ include '../Edu-Connect/connection/function.php';
 
     <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="Home/assets/img/icon.ico">
-
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <!-- CSS here -->
     <link rel="stylesheet" href="Home/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="Home/assets/css/style.css">
-
+    <link rel="stylesheet" href="Home/assets/css/animate.css">
+    <link rel="stylesheet" href="Home/assets/css/animate.min.css">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* === Apply Times New Roman to entire website === */
         body,
@@ -153,13 +158,28 @@ include '../Edu-Connect/connection/function.php';
             color: #333;
             text-decoration: none;
             padding: 8px 0;
-            transition: color 0.3s ease, transform 0.3s ease, border-bottom 0.3s ease;
+            position: relative;
+            transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        #navigation li a:hover {
-            color: #007bff;
-            border-bottom: 3px solid #007bff;
-            transform: scale(1.1);
+        #navigation li a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+
+        }
+
+     
+
+        #navigation li a:hover::after {
+            width: 100%;
+
         }
 
         /* Buttons (Rectangle with hover color change) */
@@ -173,13 +193,13 @@ include '../Edu-Connect/connection/function.php';
         }
 
         .head-btn1 {
-            background: #007bff;
+            background-color: #0d1b45;
             color: #fff;
             border: 1px solid #007bff;
         }
 
         .head-btn1:hover {
-            background: #0056b3;
+            background-color: #0d1b45;
             color: #fff;
         }
 

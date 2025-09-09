@@ -70,12 +70,40 @@ function esc($s)
         overflow: hidden;
     }
 
+    .hover-raise {
+        transition: transform .25s ease, box-shadow .25s ease
+    }
+
+    .hover-raise:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, .12) !important
+    }
+
     @media (min-width: 992px) {
         .teacher-card .teacher-photo {
             height: 240px;
         }
     }
 </style>
+<!-- Header Start: Find Teachers Page -->
+<div class="container-fluid position-relative d-flex align-items-center justify-content-center" 
+     style="min-height: 150px; overflow: hidden; background-color: #061343ff; border-radius: 0 50px 0 0;">
+    
+    <svg class="position-absolute top-0 end-0" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="z-index:1;">
+        <path d="M0,0 C100,50 150,150 200,200 L200,0 Z" fill="#ffffff10"/>
+    </svg>
+
+    <div class="position-relative text-center" style="z-index: 2; max-width: 500px;">
+        <h1 class="text-white fw-bold mb-2 animate__animated animate__fadeInDown" 
+            style="font-size:2rem; text-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+            <i class="fas fa-user-graduate me-2 text-warning"></i> Find Teachers
+        </h1>
+        <p class="text-white-50 mb-0 animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1rem;">
+            Search for qualified educators and connect with them directly
+        </p>
+    </div>
+</div>
+
 <main>
     <div class="slider-area ">
         <div class="single-slider section-overly slider-height2 d-flex align-items-center" style="background-image: url('Home/assets/img/hero/about.jpg');">
@@ -118,30 +146,18 @@ function esc($s)
                                         $bio = esc($t['bio'] ?? '');
                                     ?>
                                         <div class="col-md-6 col-lg-4 mb-4">
-                                            <div class="teacher-card card h-100 border-0 shadow-sm">
+                                            <div class="teacher-card card h-100 border-0 shadow-sm hover-raise">
                                                 <img src="<?php echo $pp; ?>" class="card-img-top teacher-photo" alt="<?php echo $name; ?>">
                                                 <div class="card-body d-flex flex-column">
-                                                    <h5 class="card-title text-center mb-1"><?php echo $name; ?></h5>
-                                                    <div class="card-subtitle text-center small mb-2"><i class="ti-location-pin"></i> <?php echo $addr; ?></div>
-                                                    <div class="meta d-flex justify-content-center gap-3 small mb-3">
-                                                        <span><strong>Exp:</strong> <?php echo $expY; ?> yrs</span>
-                                                        <?php if ($salary !== '') { ?><span><strong>Salary:</strong> <?php echo $salary; ?></span><?php } ?>
-                                                    </div>
-                                                    <?php if ($bio !== '') { ?><p class="line-clamp-3 mb-3"><?php echo $bio; ?></p><?php } ?>
-                                                    <div class="mt-auto d-flex gap-2">
-                                                        <button type="button" class="btn btn-outline-primary w-50" data-bs-toggle="modal" data-bs-target="#teacherDetailModal" onclick='showTeacherDetail(<?php echo json_encode([
-                                                                                                                                                                                                                'name' => $t['full_name'] ?? '',
-                                                                                                                                                                                                                'bio' => $t['bio'] ?? '',
-                                                                                                                                                                                                                'exp' => (int)($t['years_experience'] ?? 0),
-                                                                                                                                                                                                                'salary' => $t['expected_salary'] ?? '',
-                                                                                                                                                                                                                'address' => $t['address'] ?? '',
-                                                                                                                                                                                                                'pic' => $pp,
-                                                                                                                                                                                                            ]); ?>)'>Details</button>
-                                                        <button type="button" class="btn btn-primary w-50" onclick='openTeacherRequest(<?php echo json_encode([
-                                                                                                                                            "name" => $t['full_name'] ?? '',
-                                                                                                                                            "address" => $t['address'] ?? ''
-                                                                                                                                        ]); ?>)'>Send Request</button>
-                                                    </div>
+                                                    <h5 class="card-title text-center mb-3"><?php echo $name; ?></h5>
+                                                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#teacherDetailModal" onclick='showTeacherDetail(<?php echo json_encode([
+                                                                                                                                                                                                    'name' => $t['full_name'] ?? '',
+                                                                                                                                                                                                    'bio' => $t['bio'] ?? '',
+                                                                                                                                                                                                    'exp' => (int)($t['years_experience'] ?? 0),
+                                                                                                                                                                                                    'salary' => $t['expected_salary'] ?? '',
+                                                                                                                                                                                                    'address' => $t['address'] ?? '',
+                                                                                                                                                                                                    'pic' => $pp,
+                                                                                                                                                                                                ]); ?>)'>Details</button>
                                                 </div>
                                             </div>
                                         </div>

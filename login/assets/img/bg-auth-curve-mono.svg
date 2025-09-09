@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- Monochrome curved waves using a single brand color with varying opacity -->
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#f5f9ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft light base -->
+  <rect width="100%" height="100%" fill="url(#base)"/>
+
+  <!-- Monochrome wave layers (brand blue #0d47a1) -->
+  <g fill="#0d47a1">
+    <!-- Top waves -->
+    <path opacity="0.06" d="M0,0 C360,90 720,30 1080,90 C1440,150 1680,70 1920,130 L1920,0 Z"/>
+    <path opacity="0.04" d="M0,0 C400,120 920,40 1320,120 C1620,180 1780,120 1920,160 L1920,0 Z"/>
+
+    <!-- Bottom waves -->
+    <path opacity="0.06" d="M0,1080 C320,980 720,1050 1080,980 C1440,910 1680,1000 1920,940 L1920,1080 Z"/>
+    <path opacity="0.04" d="M0,1080 C420,960 900,1040 1320,960 C1620,900 1780,960 1920,920 L1920,1080 Z"/>
+
+    <!-- Mid background curves -->
+    <path opacity="0.03" d="M0,600 C240,560 480,640 720,600 C960,560 1200,640 1440,600 C1680,560 1800,620 1920,600 L1920,720 L0,720 Z"/>
+    <path opacity="0.02" d="M0,360 C300,320 600,400 900,360 C1200,320 1500,400 1800,360 L1920,360 L1920,480 L0,480 Z"/>
+  </g>
+
+  <!-- Minimal watermark (same single color, very low opacity) -->
+  <text x="50%" y="94%" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="44" fill="#0d47a1" opacity="0.05">Jobir Jobs</text>
+</svg>

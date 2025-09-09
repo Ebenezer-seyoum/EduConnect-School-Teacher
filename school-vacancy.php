@@ -23,25 +23,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_request']) && (i
 
 $vacancies = getVacancies(50, null);
 
-$salaryRanges = ['0-5000', '5001-10000', '10001-20000', '20001+']; // Example ranges
-$experienceLevels = ['0-1 year', '1-3 years', '3-5 years', '5+ years'];
-?>
+// Build unique locations safely
+$locations = [];
+if (!empty($vacancies)) {
+    foreach ($vacancies as $vv) {
+        $loc = trim((string)($vv['location'] ?? ''));
+        if ($loc !== '' && !in_array($loc, $locations, true)) {
+            $locations[] = $loc;
+        }
+    }
+}
 
-<main>
-    <!-- Hero Banner -->
-    <div class="slider-area">
-        <div class="single-slider section-overly slider-height2 d-flex align-items-center" style="background-image: url('assets/img/hero/about.jpg');">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="hero-cap text-center">
-                            <h2>School Vacancies</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+$salaryRanges = ['0-5000', '5001-10000', '10001-20000', '20001+']; // Example ranges
+$experienceLevels = ['0-1', '1-3', '3-5', '5+'];
+?>
+<!-- Header Start: School Vacancy Page -->
+<div class="container-fluid position-relative d-flex align-items-center justify-content-center" 
+     style="min-height: 150px; overflow: hidden; background-color: #061343ff; border-radius: 0 50px 0 0;">
+    
+    <svg class="position-absolute top-0 end-0" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="z-index:1;">
+        <path d="M0,0 C100,50 150,150 200,200 L200,0 Z" fill="#ffffff10"/>
+    </svg>
+
+    <div class="position-relative text-center" style="z-index: 2; max-width: 500px;">
+        <h1 class="text-white fw-bold mb-2 animate__animated animate__fadeInDown" 
+            style="font-size:2rem; text-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+            <i class="fas fa-school me-2 text-warning"></i> School Vacancies
+        </h1>
+        <p class="text-white-50 mb-0 animate__animated animate__fadeInUp animate__delay-1s" style="font-size: 1rem;">
+            Explore current job openings in schools near you
+        </p>
     </div>
+</div>
+
+
 
     <!-- Job Listing with Filter Sidebar -->
     <div class="job-listing-area pt-5 pb-5">
@@ -60,38 +75,50 @@ $experienceLevels = ['0-1 year', '1-3 years', '3-5 years', '5+ years'];
 
                         <!-- Location Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Location</label>
-                            <select class="form-select" id="filter-location">
-                                <option value="">All</option>
-                                <?php foreach ($locations as $loc) { ?>
-                                    <option value="<?php echo htmlspecialchars($loc); ?>"><?php echo htmlspecialchars($loc); ?></option>
+                            <label class="form-label d-block">Location</label>
+                            <div class="filter-group scroll-area" id="filter-locations">
+                                <?php foreach ($locations as $loc) {
+                                    $id = 'loc_' . md5($loc); ?>
+                                    <div class="form-check form-check-inline me-0 mb-2">
+                                        <input class="form-check-input" type="checkbox" id="<?php echo $id; ?>" name="loc[]" value="<?php echo htmlspecialchars($loc); ?>">
+                                        <label class="form-check-label badge rounded-pill bg-light text-dark border ms-1" for="<?php echo $id; ?>"><?php echo htmlspecialchars($loc); ?></label>
+                                    </div>
                                 <?php } ?>
-                            </select>
+                            </div>
                         </div>
 
                         <!-- Salary Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Salary Range (ETB)</label>
-                            <select class="form-select" id="filter-salary">
-                                <option value="">All</option>
-                                <?php foreach ($salaryRanges as $range) { ?>
-                                    <option value="<?php echo $range; ?>"><?php echo $range; ?></option>
+                            <label class="form-label d-block">Salary (ETB)</label>
+                            <div class="filter-group" id="filter-salaries">
+                                <?php foreach ($salaryRanges as $range) {
+                                    $id = 'sal_' . preg_replace('/[^0-9+]+/', '_', $range); ?>
+                                    <div class="form-check form-check-inline me-0 mb-2">
+                                        <input class="form-check-input" type="checkbox" id="<?php echo $id; ?>" name="salary[]" value="<?php echo $range; ?>">
+                                        <label class="form-check-label badge rounded-pill bg-light text-dark border ms-1" for="<?php echo $id; ?>"><?php echo $range; ?></label>
+                                    </div>
                                 <?php } ?>
-                            </select>
+                            </div>
                         </div>
 
                         <!-- Experience Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Experience</label>
-                            <select class="form-select" id="filter-experience">
-                                <option value="">All</option>
-                                <?php foreach ($experienceLevels as $exp) { ?>
-                                    <option value="<?php echo $exp; ?>"><?php echo $exp; ?></option>
+                            <label class="form-label d-block">Experience (years)</label>
+                            <div class="filter-group" id="filter-experiences">
+                                <?php foreach ($experienceLevels as $exp) {
+                                    $id = 'exp_' . preg_replace('/[^0-9+]+/', '_', $exp); ?>
+                                    <div class="form-check form-check-inline me-0 mb-2">
+                                        <input class="form-check-input" type="checkbox" id="<?php echo $id; ?>" name="exp[]" value="<?php echo $exp; ?>">
+                                        <label class="form-check-label badge rounded-pill bg-light text-dark border ms-1" for="<?php echo $id; ?>"><?php echo $exp; ?></label>
+                                    </div>
                                 <?php } ?>
-                            </select>
+                            </div>
                         </div>
 
-                        <button class="btn btn-primary w-100" id="apply-filter">Apply Filters</button>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary flex-fill" id="apply-filter">Apply</button>
+                            <button class="btn btn-outline-secondary flex-fill" id="clear-filter">Clear</button>
+                        </div>
                     </div>
                 </div>
 
@@ -102,33 +129,28 @@ $experienceLevels = ['0-1 year', '1-3 years', '3-5 years', '5+ years'];
                             <div class="col-12">
                                 <div class="alert alert-info text-center">No vacancies available.</div>
                             </div>
-                        <?php } else {
+                            <?php } else {
                             foreach ($vacancies as $v) { ?>
-                                <div class="col-12 vacancy-item" data-location="<?php echo htmlspecialchars($v['location']); ?>" data-salary="<?php echo htmlspecialchars($v['salary']); ?>" data-experience="<?php echo htmlspecialchars($v['experience'] ?? '0'); ?>">
-                                    <div class="card shadow-sm rounded wow animate__animated animate__fadeInUp">
+                                <div class="col-12 vacancy-item" data-location="<?php echo htmlspecialchars($v['location']); ?>" data-salary="<?php echo (int)($v['salary']); ?>" data-experience="<?php echo (int)($v['experience'] ?? 0); ?>">
+                                    <div class="card shadow-sm rounded border-0 hover-raise wow animate__animated animate__fadeInUp">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h5 class="card-title"><?php echo htmlspecialchars($v['title']); ?></h5>
-                                                    <p class="mb-1"><strong>Location:</strong> <?php echo htmlspecialchars($v['location']); ?></p>
-                                                    <p class="mb-0"><strong>Salary:</strong> <?php echo htmlspecialchars($v['salary']); ?> ETB</p>
-                                                    <p class="mb-0"><strong>Experience:</strong> <?php echo htmlspecialchars($v['experience'] ?? '0'); ?> years</p>
+                                                    <h5 class="card-title mb-1"><?php echo htmlspecialchars($v['title']); ?></h5>
+                                                    <div class="small text-muted mb-2"><i class="ti-location-pin"></i> <?php echo htmlspecialchars($v['location']); ?> • <strong>ETB</strong> <?php echo (int)$v['salary']; ?> • <?php echo (int)($v['experience'] ?? 0); ?> yrs</div>
                                                 </div>
                                                 <span class="badge bg-info"><?php echo htmlspecialchars($v['employment_type']); ?></span>
                                             </div>
-
                                             <div class="mt-3 d-flex gap-2 flex-wrap">
-                                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#detail-<?php echo (int)$v['sid']; ?>" aria-expanded="false" aria-controls="detail-<?php echo (int)$v['sid']; ?>">Details</button>
+                                                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#vacancyDetailModal" onclick='showVacancyDetail(<?php echo json_encode([
+                                                                                                                                                                                                    "title" => $v["title"],
+                                                                                                                                                                                                    "location" => $v["location"],
+                                                                                                                                                                                                    "salary" => (int)$v["salary"],
+                                                                                                                                                                                                    "experience" => (int)($v["experience"] ?? 0),
+                                                                                                                                                                                                    "employment_type" => $v["employment_type"],
+                                                                                                                                                                                                    "description" => $v["description"],
+                                                                                                                                                                                                ]); ?>)'>Details</button>
                                                 <button class="btn btn-primary" onclick="handleSendRequest(<?php echo (int)$v['sid']; ?>)">Send Request</button>
-                                            </div>
-
-                                            <div class="collapse mt-3" id="detail-<?php echo (int)$v['sid']; ?>">
-                                                <div class="card card-body bg-light">
-                                                    <p><?php echo nl2br(htmlspecialchars($v['description'])); ?></p>
-                                                    <div class="alert alert-warning mb-0">
-                                                        Contact information is hidden. Click "Send Request" to notify the admin and get in touch.
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -144,75 +166,163 @@ $experienceLevels = ['0-1 year', '1-3 years', '3-5 years', '5+ years'];
 
 <!-- Custom Styles -->
 <style>
-.card-body h5 {
-    font-weight: 600;
-}
-.card .badge {
-    font-size: 0.9rem;
-    padding: 0.5em 0.8em;
-}
-.btn-outline-secondary:hover {
-    background-color: #6c757d;
-    color: #fff;
-}
-.btn-primary:hover {
-    background-color: #004085;
-    border-color: #004085;
-}
-@media (max-width: 992px) {
-    .col-lg-3 {
-        margin-bottom: 20px;
+    .hover-raise {
+        transition: transform .25s ease, box-shadow .25s ease
     }
-    .d-flex.flex-wrap {
-        justify-content: center;
+
+    .hover-raise:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, .12) !important
     }
-}
+
+    .card-body h5 {
+        font-weight: 600;
+    }
+
+    .card .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #004085;
+        border-color: #004085;
+    }
+
+    @media (max-width: 992px) {
+        .col-lg-3 {
+            margin-bottom: 20px;
+        }
+
+        .d-flex.flex-wrap {
+            justify-content: center;
+        }
+    }
+
+    .filter-group {
+        max-height: 180px;
+        overflow: auto
+    }
+
+    .filter-group .form-check-input {
+        display: none
+    }
+
+    .filter-group .form-check-label {
+        cursor: pointer;
+        padding: .35rem .7rem;
+        border: 1px solid #dee2e6;
+    }
+
+    .filter-group .form-check-input:checked+.form-check-label {
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        color: #fff;
+        border-color: transparent
+    }
 </style>
+
+<!-- Vacancy Detail Modal -->
+<div class="modal fade" id="vacancyDetailModal" tabindex="-1" aria-labelledby="vacancyDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="vacancyDetailModalLabel">Vacancy Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4 id="vd-title" class="mb-1"></h4>
+                <div class="text-muted small mb-3"><i class="ti-location-pin"></i> <span id="vd-location"></span> • <strong>ETB</strong> <span id="vd-salary"></span> • <span id="vd-exp"></span> yrs • <span class="badge bg-info" id="vd-type"></span></div>
+                <p id="vd-desc" class="mb-0"></p>
+                <div class="alert alert-warning mt-3 mb-0">Contact information is hidden. Click "Send Request" to notify the admin and get in touch.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Filters Script -->
 <script>
-function handleSendRequest(vacancyId) {
-    if(confirm('Send request to the admin for this vacancy?')) {
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.innerHTML = `<input type="hidden" name="send_request" value="1">
+    function handleSendRequest(vacancyId) {
+        if (confirm('Send request to the admin for this vacancy?')) {
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = `<input type="hidden" name="send_request" value="1">
                           <input type="hidden" name="vacancy_id" value="${vacancyId}">`;
-        document.body.appendChild(form);
-        form.submit();
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
-}
 
-// Filter vacancies
-document.getElementById('apply-filter').addEventListener('click', function(){
-    let location = document.getElementById('filter-location').value;
-    let salary = document.getElementById('filter-salary').value;
-    let experience = document.getElementById('filter-experience').value;
+    // Modal populate
+    function showVacancyDetail(data) {
+        document.getElementById('vd-title').innerText = data.title || '';
+        document.getElementById('vd-location').innerText = data.location || '';
+        document.getElementById('vd-salary').innerText = data.salary || 0;
+        document.getElementById('vd-exp').innerText = data.experience || 0;
+        document.getElementById('vd-type').innerText = data.employment_type || '';
+        document.getElementById('vd-desc').innerText = data.description || '';
+    }
 
-    document.querySelectorAll('.vacancy-item').forEach(item => {
-        let itemLoc = item.getAttribute('data-location');
-        let itemSal = item.getAttribute('data-salary');
-        let itemExp = item.getAttribute('data-experience');
+    function getCheckedValues(containerId) {
+        return Array.from(document.querySelectorAll('#' + containerId + ' input[type="checkbox"]:checked')).map(el => el.value);
+    }
 
-        let salaryMatch = true;
-        if(salary){
-            let range = salary.split('-');
-            if(range[1]){
-                salaryMatch = parseInt(itemSal) >= parseInt(range[0]) && parseInt(itemSal) <= parseInt(range[1]);
-            } else {
-                salaryMatch = parseInt(itemSal) >= parseInt(range[0]);
+    function inSalaryRanges(value, ranges) {
+        if (!ranges.length) return true;
+        let v = parseInt(value || 0, 10);
+        return ranges.some(r => {
+            let parts = r.split('-');
+            if (parts.length === 2) {
+                return v >= parseInt(parts[0], 10) && v <= parseInt(parts[1], 10);
             }
-        }
+            return v >= parseInt(parts[0], 10);
+        });
+    }
 
-        let locationMatch = !location || itemLoc === location;
-        let experienceMatch = !experience || itemExp === experience.split(' ')[0];
+    function inExperienceRanges(value, ranges) {
+        if (!ranges.length) return true;
+        let v = parseInt(value || 0, 10);
+        return ranges.some(r => {
+            if (r.includes('+')) {
+                return v >= parseInt(r, 10);
+            }
+            let parts = r.split('-');
+            if (parts.length === 2) {
+                return v >= parseInt(parts[0], 10) && v <= parseInt(parts[1], 10);
+            }
+            return v === parseInt(parts[0], 10);
+        });
+    }
 
-        if(locationMatch && salaryMatch && experienceMatch){
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
+    function applyFilters() {
+        const selLocs = getCheckedValues('filter-locations');
+        const selSal = getCheckedValues('filter-salaries');
+        const selExp = getCheckedValues('filter-experiences');
+        document.querySelectorAll('.vacancy-item').forEach(item => {
+            const loc = item.getAttribute('data-location');
+            const sal = parseInt(item.getAttribute('data-salary') || 0, 10);
+            const exp = parseInt(item.getAttribute('data-experience') || 0, 10);
+            const locOk = selLocs.length ? selLocs.includes(loc) : true;
+            const salOk = inSalaryRanges(sal, selSal);
+            const expOk = inExperienceRanges(exp, selExp);
+            item.style.display = (locOk && salOk && expOk) ? 'block' : 'none';
+        });
+    }
+
+    document.getElementById('apply-filter').addEventListener('click', applyFilters);
+    document.getElementById('clear-filter').addEventListener('click', function() {
+        document.querySelectorAll('.filter-group input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+        applyFilters();
     });
-});
 </script>
 
 <?php

@@ -1,488 +1,218 @@
 <?php
 include 'Home/Homeheader.php';
 ?>
-<main>
-    <!-- slider Area Start-->
-    <div class="slider-area ">
-        <!-- Mobile Menu -->
-        <div class="slider-active">
-            <div class="single-slider slider-height hero-overly hero-landing d-flex align-items-center">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 d-none d-lg-block">
-                            <img src="Home/assets/img/teacher.png" alt="Teacher" class="hero-img img-fluid">
-                        </div>
-                        <div class="col-lg-6 text-end ms-auto">
-                            <div class="hero__caption">
-                                <h1> we connect them instantly.</h1>
-                            </div>
-                            <!-- Search Box -->
-                            <div class="hero-search mt-3">
-                                <form action="#" class="search-box">
-                                    <div class="input-form">
-                                        <input type="text" placeholder="Job Tittle or keyword">
-                                    </div>
-                                    <div class="select-form">
-                                        <div class="select-itms">
-                                            <select name="select" id="select1">
-                                                <option value="">Location BD</option>
-                                                <option value="">Location PK</option>
-                                                <option value="">Location US</option>
-                                                <option value="">Location UK</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="search-form">
-                                        <a href="#">Find job</a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- slider Area End-->
-    <!-- Our Services Start -->
-    <div class="our-services section-pad-t30">
-        <div class="container">
-            <!-- Section Tittle -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-tittle text-center">
-                        <span>FEATURED TOURS Packages</span>
-                        <h2>Browse Top Categories </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row d-flex justify-contnet-center">
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-tour"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Design & Creative</a></h5>
-                            <span>(653)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-cms"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Design & Development</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-report"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Sales & Marketing</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-app"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Mobile Application</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-helmet"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Construction</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-high-tech"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Information Technology</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-real-estate"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Real Estate</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-                    <div class="single-services text-center mb-30">
-                        <div class="services-ion">
-                            <span class="flaticon-content"></span>
-                        </div>
-                        <div class="services-cap">
-                            <h5><a href="job_listing.html">Content Writer</a></h5>
-                            <span>(658)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- More Btn -->
-            <!-- Section Button -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="browse-btn2 text-center mt-50">
-                        <a href="job_listing.html" class="border-btn2">Browse All Sectors</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Our Services End -->
-    <!-- Online CV Area Start -->
-    <div class="online-cv cv-bg section-overly pt-90 pb-120" data-background="Home/assets/img/gallery/cv_bg.jpg">
+<main role="main">
+    <!-- Hero Section with Background Image -->
+    <section class="hero-landing d-flex align-items-center text-center" style="background: url('Home/assets/img/teacher.png') center/cover no-repeat; min-height: 100vh;">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <div class="cv-caption text-center">
-                        <p class="pera1">FEATURED TOURS Packages</p>
-                        <p class="pera2"> Make a Difference with Your Online Resume!</p>
-                        <a href="#" class="border-btn2 border-btn4">Upload your cv</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Online CV Area End-->
-    <!-- Featured_job_start -->
-    <section class="featured-job-area feature-padding">
-        <div class="container">
-            <!-- Section Tittle -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-tittle text-center">
-                        <span>Recent Job</span>
-                        <h2>Featured Jobs</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="Home/assets/img/icon/job-list1.png" alt=""></a>
+                <div class="col-lg-8 col-xl-7">
+                    <div class="p-5 rounded-5 text-center" style="background: transparent; box-shadow: none; max-width: 700px; margin: auto;">
+                        <h1 class="display-5 fw-bold mb-3" style="color: #ffffff;">Connecting Schools with Qualified Teachers</h1>
+                        <p class="lead mb-4" style="color: #ffffff;">Fast, secure, and easy hiring for education.</p>
+
+                        <!-- Search Bar -->
+                        <form class="search-group mx-auto" action="search.php" method="get" role="search" aria-label="Find teachers">
+                            <div class="input-group input-group-lg hero-input rounded-pill overflow-hidden" style="box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                                <input type="text" name="query" class="form-control border-0" placeholder="Search teachers by subject or location" aria-label="Search teachers">
+                                <button type="submit" class="btn" style="background-color: #0d1b45; color: white;"><i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>Search</button>
                             </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html">
-                                    <h4>Digital Marketer</h4>
-                                </a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="Home/assets/img/icon/job-list2.png" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html">
-                                    <h4>Digital Marketer</h4>
-                                </a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="Home/assets/img/icon/job-list3.png" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html">
-                                    <h4>Digital Marketer</h4>
-                                </a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="Home/assets/img/icon/job-list4.png" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html">
-                                    <h4>Digital Marketer</h4>
-                                </a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Featured_job_end -->
-    <!-- How  Apply Process Start-->
-    <div class="apply-process-area apply-bg pt-150 pb-150" data-background="Home/assets/img/gallery/how-applybg.png">
-        <div class="container">
-            <!-- Section Tittle -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-tittle white-text text-center">
-                        <span>Apply process</span>
-                        <h2> How it works</h2>
+
+    <!-- Optional CSS for button hover -->
+    <style>
+        .hero-landing .btn:hover {
+            background-color: #0d1b45;
+            color: white;
+        }
+    </style>
+
+
+
+    <!-- School Vacancies Preview -->
+    <section class="container my-5">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <h2 class="fw-bold gradient-text mb-1">School Vacancies</h2>
+                <div class="text-muted">Latest openings from schools</div>
+            </div>
+            <a href="school-vacancy.php" class="btn btn-outline-primary">View all</a>
+        </div>
+        <div class="row g-4">
+            <?php if (empty($homeVacancies)) { ?>
+                <div class="col-12">
+                    <div class="alert alert-info">No vacancies yet.</div>
+                </div>
+                <?php } else {
+                foreach ($homeVacancies as $v) { ?>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm hover-raise rounded-4">
+                            <div class="card-body">
+                                <h5 class="mb-1"><?php echo htmlspecialchars($v['title']); ?></h5>
+                                <div class="small text-muted mb-2"><i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($v['location']); ?> • <strong>ETB</strong> <?php echo (int)$v['salary']; ?> • <?php echo (int)($v['experience'] ?? 0); ?> yrs</div>
+                                <span class="badge bg-info"><?php echo htmlspecialchars($v['employment_type']); ?></span>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a class="btn btn-sm btn-primary" href="school-vacancy.php">Details</a>
+                            </div>
+                        </div>
                     </div>
+            <?php }
+            } ?>
+        </div>
+    </section>
+
+    <!-- Find Teachers Preview -->
+    <section class="container my-5">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <h2 class="fw-bold gradient-text mb-1">Find Teachers</h2>
+                <div class="text-muted">Explore teacher profiles</div>
+            </div>
+            <a href="find-teachers.php" class="btn btn-outline-primary">View all</a>
+        </div>
+        <div class="row g-4">
+            <?php if (empty($homeTeachers)) { ?>
+                <div class="col-12">
+                    <div class="alert alert-info">No teachers available.</div>
+                </div>
+                <?php } else {
+                $i = 0;
+                foreach ($homeTeachers as $t) {
+                    if ($i++ >= 6) break;
+                    $name = htmlspecialchars($t['full_name'] ?? '');
+                    $pic = !empty($t['profile_picture']) ? htmlspecialchars($t['profile_picture']) : 'admin/assets/images/no.png'; ?>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card border-0 shadow-sm rounded-4 hover-raise h-100 text-center">
+                            <img src="<?php echo $pic; ?>" alt="<?php echo $name; ?>" class="img-fluid rounded-top" style="height:140px; object-fit:cover;">
+                            <div class="card-body p-2">
+                                <div class="small fw-semibold text-truncate" title="<?php echo $name; ?>"><?php echo $name; ?></div>
+                            </div>
+                        </div>
+                    </div>
+            <?php }
+            } ?>
+        </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="container my-5">
+        <div class="glass-card p-4 rounded-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <div class="mb-3 mb-md-0">
+                <h3 class="fw-bold gradient-text mb-1">Have questions?</h3>
+                <div class="text-muted">We’d love to help. Get in touch with our team.</div>
+            </div>
+            <a href="contact.php" class="btn btn-primary">Contact Us</a>
+        </div>
+    </section>
+
+    <!-- Auth CTAs -->
+    <section class="container my-5">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="glass-card p-4 rounded-4 d-flex align-items-center justify-content-between hover-raise">
+                    <div>
+                        <h5 class="mb-1">New here?</h5>
+                        <div class="text-muted">Create an account to get started.</div>
+                    </div>
+                    <a href="register.php" class="btn btn-outline-primary">Register</a>
                 </div>
             </div>
-            <!-- Apply Process Caption -->
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-process text-center mb-30">
-                        <div class="process-ion">
-                            <span class="flaticon-search"></span>
-                        </div>
-                        <div class="process-cap">
-                            <h5>1. Search a job</h5>
-                            <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
-                        </div>
+            <div class="col-md-6">
+                <div class="glass-card p-4 rounded-4 d-flex align-items-center justify-content-between hover-raise">
+                    <div>
+                        <h5 class="mb-1">Already have an account?</h5>
+                        <div class="text-muted">Log in to continue.</div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-process text-center mb-30">
-                        <div class="process-ion">
-                            <span class="flaticon-curriculum-vitae"></span>
-                        </div>
-                        <div class="process-cap">
-                            <h5>2. Apply for job</h5>
-                            <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-process text-center mb-30">
-                        <div class="process-ion">
-                            <span class="flaticon-tour"></span>
-                        </div>
-                        <div class="process-cap">
-                            <h5>3. Get your job</h5>
-                            <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
-                        </div>
-                    </div>
+                    <a href="login.php" class="btn btn-primary">Login</a>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- How  Apply Process End-->
-    <!-- Testimonial Start -->
-    <div class="testimonial-area testimonial-padding">
-        <div class="container">
-            <!-- Testimonial contents -->
-            <div class="row d-flex justify-content-center">
-                <div class="col-xl-8 col-lg-8 col-md-10">
-                    <div class="h1-testimonial-active dot-style">
-                        <!-- Single Testimonial -->
-                        <div class="single-testimonial text-center">
-                            <!-- Testimonial Content -->
-                            <div class="testimonial-caption ">
-                                <!-- founder -->
-                                <div class="testimonial-founder  ">
-                                    <div class="founder-img mb-30">
-                                        <img src="Home/assets/img/testmonial/testimonial-founder.png" alt="">
-                                        <span>Margaret Lawson</span>
-                                        <p>Creative Director</p>
-                                    </div>
-                                </div>
-                                <div class="testimonial-top-cap">
-                                    <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Single Testimonial -->
-                        <div class="single-testimonial text-center">
-                            <!-- Testimonial Content -->
-                            <div class="testimonial-caption ">
-                                <!-- founder -->
-                                <div class="testimonial-founder  ">
-                                    <div class="founder-img mb-30">
-                                        <img src="Home/assets/img/testmonial/testimonial-founder.png" alt="">
-                                        <span>Margaret Lawson</span>
-                                        <p>Creative Director</p>
-                                    </div>
-                                </div>
-                                <div class="testimonial-top-cap">
-                                    <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Single Testimonial -->
-                        <div class="single-testimonial text-center">
-                            <!-- Testimonial Content -->
-                            <div class="testimonial-caption ">
-                                <!-- founder -->
-                                <div class="testimonial-founder  ">
-                                    <div class="founder-img mb-30">
-                                        <img src="Home/assets/img/testmonial/testimonial-founder.png" alt="">
-                                        <span>Margaret Lawson</span>
-                                        <p>Creative Director</p>
-                                    </div>
-                                </div>
-                                <div class="testimonial-top-cap">
-                                    <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Testimonial End -->
-    <!-- Support Company Start-->
-    <div class="support-company-area support-padding fix">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-xl-6 col-lg-6">
-                    <div class="right-caption">
-                        <!-- Section Tittle -->
-                        <div class="section-tittle section-tittle2">
-                            <span>What we are doing</span>
-                            <h2>24k Talented people are getting Jobs</h2>
-                        </div>
-                        <div class="support-caption">
-                            <p class="pera-top">Mollit anim laborum duis au dolor in voluptate velit ess cillum dolore eu lore dsu quality mollit anim laborumuis au dolor in voluptate velit cillum.</p>
-                            <p>Mollit anim laborum.Duis aute irufg dhjkolohr in re voluptate velit esscillumlore eu quife nrulla parihatur. Excghcepteur signjnt occa cupidatat non inulpadeserunt mollit aboru. temnthp incididbnt ut labore mollit anim laborum suis aute.</p>
-                            <a href="about.html" class="btn post-btn">Post a job</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6">
-                    <div class="support-location-img">
-                        <img src="Home/assets/img/service/support-img.jpg" alt="">
-                        <div class="support-img-cap text-center">
-                            <p>Since</p>
-                            <span>1994</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Support Company End-->
-    <!-- Blog Area Start -->
-    <div class="home-blog-area blog-h-padding">
-        <div class="container">
-            <!-- Section Tittle -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-tittle text-center">
-                        <span>Our latest blog</span>
-                        <h2>Our recent news</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-6">
-                    <div class="home-blog-single mb-30">
-                        <div class="blog-img-cap">
-                            <div class="blog-img">
-                                <img src="Home/assets/img/blog/home-blog1.jpg" alt="">
-                                <!-- Blog date -->
-                                <div class="blog-date text-center">
-                                    <span>24</span>
-                                    <p>Now</p>
-                                </div>
-                            </div>
-                            <div class="blog-cap">
-                                <p>| Properties</p>
-                                <h3><a href="single-blog.html">Footprints in Time is perfect House in Kurashiki</a></h3>
-                                <a href="#" class="more-btn">Read more »</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6 col-md-6">
-                    <div class="home-blog-single mb-30">
-                        <div class="blog-img-cap">
-                            <div class="blog-img">
-                                <img src="Home/assets/img/blog/home-blog2.jpg" alt="">
-                                <!-- Blog date -->
-                                <div class="blog-date text-center">
-                                    <span>24</span>
-                                    <p>Now</p>
-                                </div>
-                            </div>
-                            <div class="blog-cap">
-                                <p>| Properties</p>
-                                <h3><a href="single-blog.html">Footprints in Time is perfect House in Kurashiki</a></h3>
-                                <a href="#" class="more-btn">Read more »</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Blog Area End -->
+    </section>
 
 </main>
 <?php
 include 'Home/Homefooter.php';
 ?>
+<style>
+    .hero-landing {
+        min-height: 55vh;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        margin-top: 20px;
+        /* start below header links */
+    }
+
+    .hero-landing::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(106, 17, 203, .6), rgba(37, 117, 252, .6))
+    }
+
+    .hero-landing>.container {
+        position: relative;
+        z-index: 2
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .gradient-text {
+        background: linear-gradient(90deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent
+    }
+
+    .hover-raise {
+        transition: transform .25s ease, box-shadow .25s ease
+    }
+
+    .hover-raise:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, .12) !important
+    }
+
+    /* Hero input + quick links */
+    .hero-input {
+        border-radius: 50px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .hero-input .form-control:focus {
+        box-shadow: none;
+    }
+
+    .quick-links .btn-quick {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #0a2540;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+    .quick-links .btn-quick:hover {
+        background: #0a2540;
+        border-color: #0a2540;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 16px rgba(10, 37, 64, 0.25);
+    }
+</style>

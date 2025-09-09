@@ -248,7 +248,7 @@ function validateClassType($data)
 function checkUserByUsername($data)
 {
     global $conn;
-    $query = mysqli_query($conn, "select uid from users where username ='$data'");
+    $query = mysqli_query($conn, "select uid from users where user_name ='$data'");
     $result = mysqli_num_rows($query);
     return $result;
 }
@@ -258,7 +258,7 @@ function getRoleByUsername($data)
     global $conn;
 
     if (mysqli_num_rows(mysqli_query($conn, "select * from users")) > 0) {
-        $query = mysqli_query($conn, "select uid, password, user_type from users where username='$data'");
+        $query = mysqli_query($conn, "select uid, password, user_type from users where user_name='$data'");
         $result = mysqli_fetch_array($query);
         return $result;
     } else {
@@ -279,7 +279,18 @@ function getRoleByPassword($data)
     }
 }
 
-
+function updateUserStatus($status, $uid)
+{
+    global $conn;
+    $status = (int)$status;
+    $uid = (int)$uid;
+    $query = "UPDATE users SET user_status = $status WHERE uid = $uid";
+    if (mysqli_query($conn, $query)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 function addUser($fullname, $gender, $email, $phone, $username, $password, $user_type)
 {
     global $conn;
