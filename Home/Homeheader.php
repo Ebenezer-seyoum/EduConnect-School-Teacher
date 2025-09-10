@@ -175,7 +175,7 @@ include '../Edu-Connect/connection/function.php';
 
         }
 
-     
+
 
         #navigation li a:hover::after {
             width: 100%;
@@ -262,7 +262,48 @@ include '../Edu-Connect/connection/function.php';
 </head>
 
 <body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+    <style>
+        /* Fast fade spinner */
+        #spinner {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .35s ease, visibility .35s ease;
+            z-index: 9999;
+        }
 
+        #spinner.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+    <script>
+        (function() {
+            const spinner = document.getElementById('spinner');
+            if (!spinner) return;
+
+            function hideSpinner() {
+                if (!spinner.classList.contains('show')) return;
+                spinner.classList.remove('show');
+                // Fully remove from layout after fade
+                setTimeout(() => {
+                    if (spinner && spinner.style) spinner.style.display = 'none';
+                }, 400);
+            }
+            if (document.readyState === 'complete') {
+                hideSpinner();
+            }
+            window.addEventListener('load', () => setTimeout(hideSpinner, 120)); // quick hide
+            // Safety timeout in case load event delays
+            setTimeout(hideSpinner, 2000);
+        })();
+    </script>
     <header>
         <!-- Header Start -->
         <div class="header-area header-transparrent">

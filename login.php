@@ -1,5 +1,11 @@
 <?php
-include 'login/loginHeader.php';
+// Process login before output so header() redirects work
+require_once __DIR__ . '/connection/connection.php';
+require_once __DIR__ . '/connection/function.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $username = $password = '';
 $username_err = $password_err = '';
 $all_err = '';
@@ -32,7 +38,6 @@ if (isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ((int)$user_data['user_status'] === 2) {
                     $all_err = 'This account is deactivated. Please contact the admin.';
                 } elseif ((int)$user_data['user_status'] === 0 || (int)$user_data['user_status'] === 1) {
-
                     $_SESSION['uid'] = $user_data['uid'];
                     updateUserStatus(1, $_SESSION['uid']);
                     if ($user_data['user_type'] === 'admin') {
@@ -56,6 +61,8 @@ if (isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+include 'login/loginHeader.php';
 ?>
 
 <main class="container auth-card">

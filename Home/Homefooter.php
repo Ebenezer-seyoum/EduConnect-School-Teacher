@@ -153,3 +153,64 @@
         margin-bottom: 10px;
     }
 </style>
+<style>
+    /* Back to Top Button */
+    .back-to-top {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        background: #0a2540;
+        border: 1px solid #0a2540;
+        color: #ffffff;
+        display: none;
+        /* hidden until scroll */
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        transition: background 0.3s ease, opacity 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        z-index: 999;
+        border-radius: 0;
+        text-decoration: none;
+    }
+
+    .back-to-top i {
+        font-size: 20px;
+    }
+
+    .back-to-top:hover {
+        background: #12365c;
+        border-color: #12365c;
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .back-to-top.show {
+        display: inline-flex;
+    }
+</style>
+<a href="#" class="btn btn-lg btn-lg-square back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></a>
+<script>
+    (function() {
+        const btn = document.querySelector('.back-to-top');
+        if (!btn) return;
+
+        function toggleBtn() {
+            if (window.pageYOffset > 250) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+        window.addEventListener('scroll', toggleBtn);
+        toggleBtn();
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    })();
+</script>

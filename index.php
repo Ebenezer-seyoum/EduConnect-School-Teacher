@@ -2,37 +2,97 @@
 include 'Home/Homeheader.php';
 ?>
 <main role="main">
-    <!-- Hero Section with Background Image -->
-    <section class="hero-landing d-flex align-items-center text-center" style="background: url('Home/assets/img/teacher.png') center/cover no-repeat; min-height: 100vh;">
+    <!-- Hero Section: full background image -->
+    <section class="hero-landing d-flex align-items-center justify-content-end">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-7">
-                    <div class="p-5 rounded-5 text-center" style="background: transparent; box-shadow: none; max-width: 700px; margin: auto;">
-                        <h1 class="display-5 fw-bold mb-3" style="color: #ffffff;">Connecting Schools with Qualified Teachers</h1>
-                        <p class="lead mb-4" style="color: #ffffff;">Fast, secure, and easy hiring for education.</p>
+            <div class="row">
+                <!-- Text/Search column -->
+                <div class="col-12 col-lg-6 text-lg-end text-center hero-text">
+                    <h1 class="display-5 fw-bold mb-3">Connecting Schools with Qualified Teachers</h1>
+                    <p class="lead mb-4">Fast, secure, and easy hiring for education.</p>
 
-                        <!-- Search Bar -->
-                        <form class="search-group mx-auto" action="search.php" method="get" role="search" aria-label="Find teachers">
-                            <div class="input-group input-group-lg hero-input rounded-pill overflow-hidden" style="box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-                                <input type="text" name="query" class="form-control border-0" placeholder="Search teachers by subject or location" aria-label="Search teachers">
-                                <button type="submit" class="btn" style="background-color: #0d1b45; color: white;"><i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>Search</button>
-                            </div>
-                        </form>
-                    </div>
+                    <!-- Search Bar -->
+                    <form class="search-group d-inline-flex" action="search.php" method="get" role="search" aria-label="Find teachers">
+                        <div class="input-group input-group-lg hero-input rounded-pill overflow-hidden">
+                            <input type="text" name="query" class="form-control border-0" placeholder="Search teachers by subject or location" aria-label="Search teachers">
+                            <button type="submit" class="btn btn-hero-search"><i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>Search</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Optional CSS for button hover -->
     <style>
-        .hero-landing .btn:hover {
+        /* Hero layout with full responsive background image */
+        .hero-landing {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* Modern, responsive spacing with header offset */
+            --header-height: 72px; /* adjust to your header height */
+            padding-top: calc(var(--header-height) + clamp(64px, 12vh, 160px));
+            padding-right: clamp(16px, 6vw, 64px);
+            padding-bottom: clamp(24px, 8vh, 96px);
+            padding-left: clamp(12px, 3vw, 32px);
+            background: url('Home/assets/img/teacher.png') center top/cover no-repeat;
+            background-attachment: scroll;
+        }
+
+        /* Remove any overlay */
+        .hero-landing::before {
+            display: none !important;
+        }
+
+        /* Text column alignment */
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .hero-text {
+                text-align: right;
+                padding-right: 2rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .hero-text {
+                text-align: center;
+                padding-right: 0;
+            }
+        }
+
+        /* Text styling */
+        .hero-landing h1,
+        .hero-landing p {
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        /* Search button styling */
+        .btn-hero-search {
             background-color: #0d1b45;
-            color: white;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .btn-hero-search:hover {
+            background-color: #0f2a6b;
+            color: #fff;
+        }
+
+        /* Search input styling */
+        .hero-input .form-control {
+            border: none;
         }
     </style>
-
-
+</main>
 
     <!-- School Vacancies Preview -->
     <section class="container my-5">
@@ -142,18 +202,14 @@ include 'Home/Homefooter.php';
 <style>
     .hero-landing {
         min-height: 55vh;
-        background-size: cover;
-        background-position: center;
         position: relative;
         margin-top: 20px;
         /* start below header links */
     }
 
     .hero-landing::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(106, 17, 203, .6), rgba(37, 117, 252, .6))
+        content: none !important;
+        /* ensure no overlay */
     }
 
     .hero-landing>.container {
@@ -214,5 +270,20 @@ include 'Home/Homefooter.php';
         color: #fff;
         transform: translateY(-1px);
         box-shadow: 0 8px 16px rgba(10, 37, 64, 0.25);
+    }
+
+    /* Optional: use a background image with color overlay and fallback color */
+    .hero-landing.bg-image {
+        background-color: #0d1b45;
+        /* fallback color behind the image */
+        background-image: linear-gradient(135deg, rgba(13, 27, 69, 0.55), rgba(13, 27, 69, 0.35)), url('Home/assets/img/teacher.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Hide inline image when using background image mode to avoid duplication */
+    .hero-landing.bg-image .hero-graphic {
+        display: none;
     }
 </style>

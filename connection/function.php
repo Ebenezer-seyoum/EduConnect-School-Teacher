@@ -602,71 +602,63 @@ function markNotificationRead($id, $adminUid)
     return mysqli_query($conn, $sql) ? true : false;
 }
 
-// ---- Feedback helpers ----
-function ensureFeedbackTable()
+
+function addFeedback($name, $email, $phone, $subject, $message)
 {
-    // Attempt to create feedback table if it doesn't exist
-    // Columns: id, name, email, subject, message, created_at
     global $conn;
-    $sql = "CREATE TABLE IF NOT EXISTS feedback (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(150) NOT NULL,
-                email VARCHAR(200) NOT NULL,
-                subject VARCHAR(255) NOT NULL,
-                message TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-    @mysqli_query($conn, $sql);
+    // Sanitize for DB
+    $nameSql = mysqli_real_escape_string($conn, basics($name));
+    $emailSql = mysqli_real_escape_string($conn, basics($email));
+    $phoneSql = mysqli_real_escape_string($conn, basics($phone));
+    $subjectSql = mysqli_real_escape_string($conn, $subject);
+    $messageSql = mysqli_real_escape_string($conn, $message);
+
+    $sql = "INSERT INTO feedback (name, email, subject, message)
+            VALUES ('$nameSql', '$emailSql', '$subjectSql', '$messageSql')";
+
+    return mysqli_query($conn, $sql) ? 1 : 0;
 }
 
-function addFeedback($name, $email, $subject, $message)
+// Flexible feedback insert (uses existing columns: subject, message, email, phone, optional name)
+function addFeedbackContact($name, $email, $phone, $subject, $message)
 {
     global $conn;
-    ensureFeedbackTable();
+    // Basic validation
+    if ($email === '' || $subject === '' || $message === '') return [false, 'Required fields missing'];
+    if (!validateEmail($email)) return [false, 'Invalid email'];
+    if ($phone !== '' && !validatePhoneNumber($phone)) return [false, 'Invalid phone'];
+    if (mb_strlen($subject) > 190) return [false, 'Subject too long'];
+    if (mb_strlen($email) > 50) return [false, 'Email too long'];
+    if (mb_strlen($phone) > 50) return [false, 'Phone too long'];
+    if (mb_strlen($message) > 1000) return [false, 'Message too long'];
 
-    // basic server-side validation using existing helpers
-    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-        return [false, 'All fields are required.'];
-    }
-    if (!validateEmail($email)) {
-        return [false, 'Invalid email address.'];
-    }
-    // Sanitize and insert
-    $name = mysqli_real_escape_string($conn, basics($name));
-    $email = mysqli_real_escape_string($conn, basics($email));
-    $subject = mysqli_real_escape_string($conn, trim($subject));
-    $message = mysqli_real_escape_string($conn, trim($message));
-
-    $sql = "INSERT INTO feedback (name, email, subject, message) VALUES ('$name', '$email', '$subject', '$message')";
-    if (mysqli_query($conn, $sql)) {
-        return [true, 'Feedback submitted'];
-    }
-    return [false, 'Database error while saving feedback.'];
-}
-
-function getFeedbacks($limit = 200)
-{
-    global $conn;
-    ensureFeedbackTable();
-    $limit = (int)$limit;
-    $rows = [];
-    $res = mysqli_query($conn, "SELECT id, name, email, subject, message, created_at FROM feedback ORDER BY id DESC LIMIT $limit");
-    if ($res) {
-        while ($r = mysqli_fetch_assoc($res)) {
-            $rows[] = $r;
+    // Detect columns
+    $hasName = false;
+    $hasPhone = false;
+    $resCols = @mysqli_query($conn, "SHOW COLUMNS FROM feedback");
+    if ($resCols) {
+        while ($c = mysqli_fetch_assoc($resCols)) {
+            if (strcasecmp($c['Field'], 'name') === 0) $hasName = true;
+            if (strcasecmp($c['Field'], 'phone') === 0) $hasPhone = true;
         }
     }
-    return $rows;
-}
-
-function getFeedbackById($id)
-{
-    global $conn;
-    ensureFeedbackTable();
-    $id = (int)$id;
-    $res = mysqli_query($conn, "SELECT id, name, email, subject, message, created_at FROM feedback WHERE id = $id LIMIT 1");
-    if ($res && mysqli_num_rows($res) === 1) {
-        return mysqli_fetch_assoc($res);
+    $cols = [];
+    $vals = [];
+    if ($hasName) {
+        $cols[] = 'name';
+        $vals[] = "'" . mysqli_real_escape_string($conn, basics($name)) . "'";
     }
-    return null;
+    $cols[] = 'email';
+    $vals[] = "'" . mysqli_real_escape_string($conn, basics($email)) . "'";
+    if ($hasPhone) {
+        $cols[] = 'phone';
+        $vals[] = "'" . mysqli_real_escape_string($conn, basics($phone)) . "'";
+    }
+    $cols[] = 'subject';
+    $vals[] = "'" . mysqli_real_escape_string($conn, $subject) . "'";
+    $cols[] = 'message';
+    $vals[] = "'" . mysqli_real_escape_string($conn, $message) . "'";
+    $sql = "INSERT INTO feedback (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ")";
+    if (mysqli_query($conn, $sql)) return [true, 'Saved'];
+    return [false, 'DB error'];
 }

@@ -1,18 +1,92 @@
 <?php
 include 'Home/Homeheader.php';
+
+// Initialize state (like register page style)
+$fb_success = $fb_error = '';
+$fb_old = [
+    'name' => '',
+    'email' => '',
+    'phone' => '',
+    'subject' => '',
+    'message' => ''
+];
+$fb_field_errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_form'])) {
+    // Capture old values (sticky form)
+    foreach ($fb_old as $k => $v) {
+        $fb_old[$k] = trim($_POST[$k] ?? '');
+    }
+
+    // Validate
+    if ($fb_old['name'] === '') {
+        $fb_field_errors['name'] = 'Full name is required.';
+    } elseif (mb_strlen($fb_old['name']) > 150) {
+        $fb_field_errors['name'] = 'Full name max 150 characters.';
+    }
+    if ($fb_old['email'] === '') {
+        $fb_field_errors['email'] = 'Email is required.';
+    } elseif (!validateEmail($fb_old['email'])) {
+        $fb_field_errors['email'] = 'Invalid email format.';
+    } elseif (mb_strlen($fb_old['email']) > 50) {
+        $fb_field_errors['email'] = 'Email max 50 characters.';
+    }
+    if ($fb_old['phone'] === '') {
+        $fb_field_errors['phone'] = 'Phone is required.';
+    } elseif (!validatePhoneNumber($fb_old['phone'])) {
+        $fb_field_errors['phone'] = 'Invalid phone number.';
+    } elseif (mb_strlen($fb_old['phone']) > 50) {
+        $fb_field_errors['phone'] = 'Phone max 50 characters.';
+    }
+    if ($fb_old['subject'] === '') {
+        $fb_field_errors['subject'] = 'Subject is required.';
+    } elseif (mb_strlen($fb_old['subject']) > 190) {
+        $fb_field_errors['subject'] = 'Subject max 190 characters.';
+    }
+    if ($fb_old['message'] === '') {
+        $fb_field_errors['message'] = 'Message is required.';
+    } elseif (mb_strlen($fb_old['message']) > 1000) {
+        $fb_field_errors['message'] = 'Message must be 1000 characters or less.';
+    }
+
+    if (empty($fb_field_errors)) {
+        [$ok, $m] = addFeedbackContact($fb_old['name'], $fb_old['email'], $fb_old['phone'], $fb_old['subject'], $fb_old['message']);
+        if ($ok) {
+            $fb_success = 'Thank you! Your feedback has been sent.';
+            $fb_old = ['name' => '', 'email' => '', 'phone' => '', 'subject' => '', 'message' => ''];
+        } else {
+            $fb_error = $m ?: 'Failed to send feedback.';
+        }
+    } else {
+        $fb_error = 'Please correct the highlighted fields.';
+    }
+
+    // AJAX response (prevent full page reload scroll jump)
+    if (isset($_POST['ajax']) && $_POST['ajax'] === '1') {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'ok' => !empty($fb_success) && empty($fb_field_errors),
+            'success' => $fb_success,
+            'error' => $fb_error,
+            'field_errors' => $fb_field_errors,
+            'old' => $fb_old
+        ]);
+        exit;
+    }
+}
 ?>
 <!-- Header Start -->
-<div class="container-fluid position-relative d-flex align-items-center justify-content-center" 
-     style="min-height: 150px; overflow: hidden; background-color: #061343ff; border-radius: 0 50px 0 0;">
-    
+<div class="container-fluid position-relative d-flex align-items-center justify-content-center"
+    style="min-height: 150px; overflow: hidden; background-color: #061343ff; border-radius: 0 50px 0 0;">
+
     <!-- Decorative Top-Right Curve -->
     <svg class="position-absolute top-0 end-0" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="z-index:1;">
-        <path d="M0,0 C100,50 150,150 200,200 L200,0 Z" fill="#ffffff10"/>
+        <path d="M0,0 C100,50 150,150 200,200 L200,0 Z" fill="#ffffff10" />
     </svg>
 
     <!-- Header Content -->
     <div class="position-relative text-center" style="z-index: 2; max-width: 500px;">
-        <h1 class="text-white fw-bold mb-2 animate__animated animate__fadeInDown" 
+        <h1 class="text-white fw-bold mb-2 animate__animated animate__fadeInDown"
             style="font-size:2rem; text-shadow: 0 2px 6px rgba(0,0,0,0.3);">
             <i class="fas fa-briefcase me-2 text-warning"></i> Contact Us
         </h1>
@@ -290,7 +364,10 @@ include 'Home/Homeheader.php';
 
             <!-- Feedback Form -->
             <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
-                <form class="p-4 rounded-3" style="background-color: #0d3b66;">
+                <?php if (!empty($fb_success)) { ?><div id="fb-success" class="alert alert-success fw-bold" style="background:#0f5132;color:#fff;border:none;"><?php echo $fb_success; ?></div><?php } ?>
+                <?php if (!empty($fb_error)) { ?><div id="fb-error" class="alert alert-danger fw-bold"><?php echo $fb_error; ?></div><?php } ?>
+                <form id="contact-form" class="p-4 rounded-3 dark-form" style="background-color: #0d3b66;" method="post" action="">
+                    <input type="hidden" name="contact_form" value="1">
                     <div class="sub-style mb-4">
                         <h5 class="sub-title text-light pe-3">Let’s Connect</h5>
                     </div>
@@ -300,36 +377,45 @@ include 'Home/Homeheader.php';
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control form-control-dark" id="name" placeholder="Your Name">
-                                <label for="name" class="text-light">Your Name</label>
+                                <input type="text" class="form-control form-control-dark <?php echo !empty($fb_field_errors['name']) ? 'is-invalid' : ''; ?>" id="name" name="name" placeholder="Your Full Name" maxlength="150" value="<?php echo htmlspecialchars($fb_old['name']); ?>">
+                                <label for="name" class="text-light">Your Full Name</label>
+                                <?php if (!empty($fb_field_errors['name'])) { ?><div class="invalid-feedback d-block"><?php echo htmlspecialchars($fb_field_errors['name']); ?></div><?php } ?>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="email" class="form-control form-control-dark" id="email" placeholder="Your Email">
+                                <input type="email" class="form-control form-control-dark <?php echo !empty($fb_field_errors['email']) ? 'is-invalid' : ''; ?>" id="email" name="email" placeholder="Your Email" maxlength="50" value="<?php echo htmlspecialchars($fb_old['email']); ?>">
                                 <label for="email" class="text-light">Your Email</label>
+                                <?php if (!empty($fb_field_errors['email'])) { ?><div class="invalid-feedback d-block"><?php echo htmlspecialchars($fb_field_errors['email']); ?></div><?php } ?>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control form-control-dark" id="phone" placeholder="Phone">
+                                <input type="text" class="form-control form-control-dark <?php echo !empty($fb_field_errors['phone']) ? 'is-invalid' : ''; ?>" id="phone" name="phone" placeholder="Phone (e.g. +251911234567)" maxlength="50" pattern="^\+?\d{10,15}$" value="<?php echo htmlspecialchars($fb_old['phone']); ?>">
                                 <label for="phone" class="text-light">Your Phone</label>
+                                <?php if (!empty($fb_field_errors['phone'])) { ?><div class="invalid-feedback d-block"><?php echo htmlspecialchars($fb_field_errors['phone']); ?></div><?php } ?>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control form-control-dark" id="subject" placeholder="Subject">
+                                <input type="text" class="form-control form-control-dark <?php echo !empty($fb_field_errors['subject']) ? 'is-invalid' : ''; ?>" id="subject" name="subject" placeholder="Subject" maxlength="190" value="<?php echo htmlspecialchars($fb_old['subject']); ?>">
                                 <label for="subject" class="text-light">Subject</label>
+                                <?php if (!empty($fb_field_errors['subject'])) { ?><div class="invalid-feedback d-block"><?php echo htmlspecialchars($fb_field_errors['subject']); ?></div><?php } ?>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating">
-                                <textarea class="form-control form-control-dark" placeholder="Leave a message here" id="message" style="height: 160px"></textarea>
+                                <textarea class="form-control form-control-dark <?php echo !empty($fb_field_errors['message']) ? 'is-invalid' : ''; ?>" placeholder="Write your message (max 1000 characters)" id="message" name="message" style="height: 160px" maxlength="1000"><?php echo htmlspecialchars($fb_old['message']); ?></textarea>
                                 <label for="message" class="text-light">Message</label>
+                                <div class="d-flex justify-content-between small mt-1">
+                                    <div class="text-danger" id="message-warning" style="display:none;">Approaching limit</div>
+                                    <div id="message-count" class="text-light ms-auto">0 / 1000</div>
+                                </div>
+                                <?php if (!empty($fb_field_errors['message'])) { ?><div class="invalid-feedback d-block"><?php echo htmlspecialchars($fb_field_errors['message']); ?></div><?php } ?>
                             </div>
                         </div>
                         <div class="col-12">
-                            <button class="btn w-100 py-3" style="background:#fff;color:#8B0000;border:2px solid #8B0000;font-weight:600;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#8B0000';this.style.color='#fff';" onmouseout="this.style.background='#fff';this.style.color='#8B0000';">Send Message</button>
+                            <button type="submit" class="btn w-100 py-3" style="background:#fff;color:#8B0000;border:2px solid #8B0000;font-weight:600;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#8B0000';this.style.color='#fff';" onmouseout="this.style.background='#fff';this.style.color='#8B0000';">Send Message</button>
                         </div>
                     </div>
                 </form>
@@ -342,3 +428,62 @@ include 'Home/Homeheader.php';
 <?php
 include 'Home/Homefooter.php';
 ?>
+<style>
+    .dark-form .invalid-feedback {
+        color: #dc3545 !important;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .dark-form .form-control.is-invalid,
+    .dark-form .form-control-dark.is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: none;
+    }
+
+    .dark-form .form-floating>.invalid-feedback {
+        position: static;
+        margin-top: 4px;
+    }
+
+    #message-count.text-danger {
+        font-weight: 700;
+    }
+</style>
+<script>
+    (function() {
+        const msg = document.getElementById('message');
+        const count = document.getElementById('message-count');
+        const warn = document.getElementById('message-warning');
+        if (!msg) return;
+
+        function update() {
+            const len = msg.value.length;
+            count.textContent = len + ' / 1000';
+            if (len > 1000) {
+                count.classList.remove('text-light');
+                count.classList.add('text-danger');
+                warn.style.display = 'block';
+                warn.textContent = 'Over limit';
+            } else if (len >= 950) {
+                count.classList.remove('text-light');
+                count.classList.add('text-danger');
+                warn.style.display = 'block';
+                warn.textContent = 'Approaching limit';
+            } else {
+                count.classList.remove('text-danger');
+                count.classList.add('text-light');
+                warn.style.display = 'none';
+            }
+        }
+        msg.addEventListener('input', update);
+        update();
+        // Auto hide success/error after 3s
+        setTimeout(() => {
+            const s = document.getElementById('fb-success');
+            if (s) s.style.display = 'none';
+            const e = document.getElementById('fb-error');
+            if (e) e.style.display = 'none';
+        }, 3000);
+    })();
+</script>
