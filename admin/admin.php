@@ -154,12 +154,11 @@ include 'adminHeader.php'
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </div>
 </div>
+
 <?php
 include 'adminFooter.php'
 ?>

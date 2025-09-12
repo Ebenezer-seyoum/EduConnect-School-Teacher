@@ -90,7 +90,7 @@ include 'login/loginHeader.php';
                     <div class="invalid-feedback"><?php echo !empty($password_err) ? htmlspecialchars($password_err) : 'Please enter your password'; ?></div>
                 </div>
                 <div class="col-12 d-flex justify-content-end">
-                    <a href="#" class="auth-cta-link" onclick="alert('Password reset coming soon.'); return false;">Forgot password?</a>
+                    <a href="forget.php" class="auth-cta-link">Forgot password?</a>
                 </div>
                 <div class="col-12 text-center">
                     <button type="submit" name="login" value="1" class="btn btn-outline-primary btn-lg px-5">

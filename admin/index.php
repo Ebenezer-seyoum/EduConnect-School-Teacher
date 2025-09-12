@@ -15,7 +15,11 @@ include 'adminHeader.php'
         </li>
         <li class="nav-item dropdown">
           <?php $unreadCount = getUnreadNotificationCount($_SESSION['uid']);
-          $notifs = getNotifications($_SESSION['uid'], 8); ?>
+          $notifs = getNotifications($_SESSION['uid'], 8);
+          $schema = function_exists('notifications_read_schema') ? notifications_read_schema() : ['col' => 'read_at', 'mode' => 'timestamp'];
+          $readCol = $schema['col'];
+          $readMode = $schema['mode'];
+          ?>
           <a class="nav-link position-relative" href="javascript:void(0)" id="drop1" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="ti ti-bell"></i>
             <?php if ($unreadCount > 0) { ?>
@@ -27,13 +31,20 @@ include 'adminHeader.php'
               <?php if (empty($notifs)) { ?>
                 <div class="dropdown-item text-muted small">No notifications</div>
                 <?php } else {
-                foreach ($notifs as $n) { ?>
-                  <a href="index.php?page=vacancies&tab=notif_detail&nid=<?php echo (int)$n['id']; ?>" class="dropdown-item d-flex justify-content-between align-items-start <?php echo ((int)$n['is_read'] === 0) ? 'fw-semibold' : ''; ?>">
+                foreach ($notifs as $n) {
+                  $isUnread = true;
+                  if ($readMode === 'timestamp') {
+                    $isUnread = empty($n[$readCol]);
+                  } else {
+                    $isUnread = isset($n[$readCol]) ? ((int)$n[$readCol] === 0) : true;
+                  }
+                ?>
+                  <a href="index.php?page=vacancies&tab=notif_detail&nid=<?php echo (int)$n['id']; ?>" class="dropdown-item d-flex justify-content-between align-items-start <?php echo $isUnread ? 'fw-semibold' : ''; ?>">
                     <span>
                       <?php echo htmlspecialchars($n['sender_name'] ?: 'Request', ENT_QUOTES, 'UTF-8'); ?>
                       <small class="d-block text-muted">#<?php echo (int)$n['id']; ?> • <?php echo htmlspecialchars(substr($n['message'] ?? '', 0, 50)); ?></small>
                     </span>
-                    <?php if ((int)$n['is_read'] === 0) { ?><span class="badge bg-primary">New</span><?php } ?>
+                    <?php if ($isUnread) { ?><span class="badge bg-primary">New</span><?php } ?>
                   </a>
               <?php }
               } ?>

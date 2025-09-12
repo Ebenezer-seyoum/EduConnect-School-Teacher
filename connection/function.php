@@ -432,102 +432,29 @@ function deleteVacancy($id, $createdBy = null)
     return mysqli_query($conn, $sql) ? true : false;
 }
 
-// ---- Notifications helpers ----
-function ensureNotificationsTable()
-{ /* no-op: tables created manually */
-}
-
-// ---- Teacher profile helpers ----
-function ensureTeacherProfilesTable()
-{ /* no-op: tables created manually */
-}
-
-function getTeacherProfileByUserId($uid)
-{
-    global $conn;
-    ensureTeacherProfilesTable();
-    $uid = (int)$uid;
-    $res = mysqli_query($conn, "SELECT * FROM teacher_profiles WHERE user_id = $uid LIMIT 1");
-    if ($res && mysqli_num_rows($res) === 1) return mysqli_fetch_assoc($res);
-    return null;
-}
-
-function createTeacherProfile($uid, $data)
-{
-    global $conn;
-    ensureTeacherProfilesTable();
-    $uid = (int)$uid;
-    $full_name = mysqli_real_escape_string($conn, $data['full_name']);
-    $bio = mysqli_real_escape_string($conn, $data['bio'] ?? '');
-    $years_experience = (int)($data['years_experience'] ?? 0);
-    $expected_salary = $data['expected_salary'] !== '' ? (float)$data['expected_salary'] : 'NULL';
-    $address = mysqli_real_escape_string($conn, $data['address'] ?? '');
-    $contact_email = mysqli_real_escape_string($conn, $data['contact_email'] ?? '');
-    $contact_phone = mysqli_real_escape_string($conn, $data['contact_phone'] ?? '');
-    $profile_picture = mysqli_real_escape_string($conn, $data['profile_picture'] ?? '');
-    $cv = mysqli_real_escape_string($conn, $data['cv'] ?? '');
-
-    $expected_salary_sql = ($expected_salary === 'NULL') ? 'NULL' : sprintf("'%.2f'", $expected_salary);
-
-    $sql = "INSERT INTO teacher_profiles (user_id, profile_picture, full_name, bio, years_experience, expected_salary, cv, address, contact_email, contact_phone)
-            VALUES ($uid, '$profile_picture', '$full_name', '$bio', $years_experience, $expected_salary_sql, '$cv', '$address', '$contact_email', '$contact_phone')";
-    return mysqli_query($conn, $sql) ? true : false;
-}
-
-function updateTeacherProfile($uid, $data)
-{
-    global $conn;
-    ensureTeacherProfilesTable();
-    $uid = (int)$uid;
-    $fields = [];
-    foreach (['full_name', 'bio', 'address', 'contact_email', 'contact_phone'] as $k) {
-        if (isset($data[$k])) {
-            $fields[] = $k . "='" . mysqli_real_escape_string($conn, $data[$k]) . "'";
-        }
-    }
-    if (isset($data['years_experience'])) {
-        $fields[] = 'years_experience=' . (int)$data['years_experience'];
-    }
-    if (array_key_exists('expected_salary', $data)) {
-        if ($data['expected_salary'] === '' || $data['expected_salary'] === null) {
-            $fields[] = 'expected_salary=NULL';
-        } else {
-            $fields[] = 'expected_salary=' . sprintf("'%.2f'", (float)$data['expected_salary']);
-        }
-    }
-    if (!empty($data['profile_picture'])) {
-        $fields[] = "profile_picture='" . mysqli_real_escape_string($conn, $data['profile_picture']) . "'";
-    }
-    if (!empty($data['cv'])) {
-        $fields[] = "cv='" . mysqli_real_escape_string($conn, $data['cv']) . "'";
-    }
-    if (empty($fields)) return false;
-    $sql = "UPDATE teacher_profiles SET " . implode(',', $fields) . " WHERE user_id = $uid";
-    return mysqli_query($conn, $sql) ? true : false;
-}
-
-function getTeacherProfiles($limit = 100)
-{
-    global $conn;
-    ensureTeacherProfilesTable();
-    $limit = (int)$limit;
-    $rows = [];
-    $sql = "SELECT user_id, full_name, profile_picture, bio, years_experience, expected_salary, address, cv FROM teacher_profiles ORDER BY user_id DESC LIMIT $limit";
-    $res = mysqli_query($conn, $sql);
-    if ($res) {
-        while ($r = mysqli_fetch_assoc($res)) {
-            $rows[] = $r;
-        }
-    }
-    return $rows;
-}
-
-function getAdminUids()
+// Return all admin user IDs; optionally only active admins if user_status exists
+function getAdminUids($onlyActive = false)
 {
     global $conn;
     $uids = [];
-    // Only select active admins if user_status exists
-    $sql = "SELECT uid FROM users WHERE user_type='admin'";
+    $where = "user_type='admin'";
+    if ($onlyActive) {
+        // Check if user_status column exists
+        $hasUserStatus = false;
+        $cols = @mysqli_query($conn, "SHOW COLUMNS FROM users");
+        if ($cols) {
+            while ($c = mysqli_fetch_assoc($cols)) {
+                if (strcasecmp($c['Field'], 'user_status') === 0) {
+                    $hasUserStatus = true;
+                    break;
+                }
+            }
+        }
+        if ($hasUserStatus) {
+            $where .= " AND user_status = 1";
+        }
+    }
+    $sql = "SELECT uid FROM users WHERE $where";
     $res = mysqli_query($conn, $sql);
     if ($res) {
         while ($r = mysqli_fetch_assoc($res)) {
@@ -537,16 +464,146 @@ function getAdminUids()
     return $uids;
 }
 
-function addNotification($adminUid, $vacancyId, $senderName, $senderContact, $message)
+// ---- Notifications helpers ----
+function ensureNotificationsTable()
+{ /* no-op: tables created manually */
+}
+
+// Detect notifications schema for read state (is_read vs read_at)
+function notifications_read_schema()
 {
+    static $schema = null;
+    if ($schema !== null) return $schema;
+    global $conn;
+    $col = null;
+    $mode = 'timestamp';
+    $res = @mysqli_query($conn, "SHOW COLUMNS FROM notifications");
+    if ($res) {
+        while ($c = mysqli_fetch_assoc($res)) {
+            $fname = strtolower($c['Field']);
+            if ($fname === 'is_read') {
+                $col = 'is_read';
+                $mode = 'bool';
+                break;
+            }
+            if ($fname === 'read_at') {
+                $col = 'read_at';
+                $type = strtolower($c['Type'] ?? '');
+                if (strpos($type, 'timestamp') !== false || strpos($type, 'datetime') !== false) {
+                    $mode = 'timestamp';
+                } else {
+                    $mode = 'bool';
+                }
+            }
+        }
+    }
+    if ($col === null) {
+        $col = 'read_at';
+        $mode = 'timestamp';
+    }
+    $schema = ['col' => $col, 'mode' => $mode];
+    return $schema;
+}
+
+function addNotification($adminUid, $vacancyId, $senderName, $senderContact, $message, $teacherId = null)
+{
+    // Align with notifications table: user_id, message, sender_name, sender_contact, read flag
     global $conn;
     ensureNotificationsTable();
     $adminUid = (int)$adminUid;
     $vacancyId = (int)$vacancyId;
     $senderName = mysqli_real_escape_string($conn, $senderName ?? '');
     $senderContact = mysqli_real_escape_string($conn, $senderContact ?? '');
-    $message = mysqli_real_escape_string($conn, $message ?? '');
-    $sql = "INSERT INTO notifications (admin_uid, vacancy_id, sender_name, sender_contact, message) VALUES ($adminUid, $vacancyId, '$senderName', '$senderContact', '$message')";
+    $teacherId = is_null($teacherId) ? null : (int)$teacherId;
+    $msg = trim($message ?? '');
+    if ($msg === '') {
+        $msg = "Request on vacancy #$vacancyId by $senderName ($senderContact)";
+    }
+    $msg = mysqli_real_escape_string($conn, $msg);
+
+    $schema = notifications_read_schema();
+    $col = $schema['col'];
+    $mode = $schema['mode'];
+    $unreadVal = ($mode === 'timestamp') ? 'NULL' : '0';
+
+    // Check for optional columns
+    $hasSchoolId = false;
+    $hasTeacherId = false;
+    $hasSenderName = false;
+    $hasSenderContact = false;
+    $hasType = false;
+    $colsRes = @mysqli_query($conn, "SHOW COLUMNS FROM notifications");
+    if ($colsRes) {
+        while ($c = mysqli_fetch_assoc($colsRes)) {
+            if (strcasecmp($c['Field'], 'school_id') === 0) {
+                $hasSchoolId = true;
+            }
+            if (strcasecmp($c['Field'], 'teacher_id') === 0) {
+                $hasTeacherId = true;
+            }
+            if (strcasecmp($c['Field'], 'sender_name') === 0) {
+                $hasSenderName = true;
+            }
+            if (strcasecmp($c['Field'], 'sender_contact') === 0) {
+                $hasSenderContact = true;
+            }
+            if (strcasecmp($c['Field'], 'type') === 0) {
+                $hasType = true;
+            }
+        }
+    }
+
+    // Resolve teacher_id to teacher_profiles.tid if necessary (FK safety)
+    $teacherTidVal = 'NULL';
+    if ($hasTeacherId) {
+        if (!is_null($teacherId) && $teacherId > 0) {
+            $id = (int)$teacherId;
+            $foundTid = null;
+            // First, assume it's already a tid
+            $rs1 = @mysqli_query($conn, "SELECT tid FROM teacher_profiles WHERE tid = $id LIMIT 1");
+            if ($rs1 && mysqli_num_rows($rs1) === 1) {
+                $row = mysqli_fetch_assoc($rs1);
+                $foundTid = (int)$row['tid'];
+            }
+            // If not, try mapping from user_id to tid
+            if ($foundTid === null) {
+                $rs2 = @mysqli_query($conn, "SELECT tid FROM teacher_profiles WHERE user_id = $id LIMIT 1");
+                if ($rs2 && mysqli_num_rows($rs2) === 1) {
+                    $row = mysqli_fetch_assoc($rs2);
+                    $foundTid = (int)$row['tid'];
+                }
+            }
+            if ($foundTid !== null && $foundTid > 0) {
+                $teacherTidVal = (string)$foundTid;
+            } else {
+                // Unknown teacher id — avoid FK violation
+                $teacherTidVal = 'NULL';
+            }
+        }
+    }
+
+    // Build insert dynamically
+    $cols = ['user_id', 'message', $col];
+    $vals = [(string)$adminUid, "'$msg'", $unreadVal];
+    if ($hasSenderName) {
+        $cols[] = 'sender_name';
+        $vals[] = "'$senderName'";
+    }
+    if ($hasSenderContact) {
+        $cols[] = 'sender_contact';
+        $vals[] = "'$senderContact'";
+    }
+    // Do NOT use 'type' anymore; keep compatibility only if it's required and nullable/has default.
+    if ($hasSchoolId) {
+        $cols[] = 'school_id';
+        $vals[] = ($vacancyId > 0) ? (string)$vacancyId : 'NULL';
+    }
+    if ($hasTeacherId) {
+        $cols[] = 'teacher_id';
+        $vals[] = $teacherTidVal;
+    }
+
+    $sql = "INSERT INTO notifications (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ")";
     return mysqli_query($conn, $sql) ? true : false;
 }
 
@@ -555,7 +612,11 @@ function getUnreadNotificationCount($adminUid)
     global $conn;
     ensureNotificationsTable();
     $adminUid = (int)$adminUid;
-    $sql = "SELECT COUNT(*) AS c FROM notifications WHERE uid = $adminUid AND is_read = 0";
+    $schema = notifications_read_schema();
+    $col = $schema['col'];
+    $mode = $schema['mode'];
+    $cond = ($mode === 'timestamp') ? "$col IS NULL" : "$col = 0";
+    $sql = "SELECT COUNT(*) AS c FROM notifications WHERE user_id = $adminUid AND $cond";
     $res = mysqli_query($conn, $sql);
     if ($res) {
         $row = mysqli_fetch_assoc($res);
@@ -570,7 +631,11 @@ function getNotifications($adminUid, $limit = 10)
     ensureNotificationsTable();
     $adminUid = (int)$adminUid;
     $limit = (int)$limit;
-    $sql = "SELECT * FROM notifications WHERE uid = $adminUid ORDER BY is_read ASC, id DESC LIMIT $limit";
+    $schema = notifications_read_schema();
+    $col = $schema['col'];
+    $mode = $schema['mode'];
+    $orderUnread = ($mode === 'timestamp') ? "($col IS NULL)" : "($col = 0)";
+    $sql = "SELECT * FROM notifications WHERE user_id = $adminUid ORDER BY $orderUnread DESC, id DESC LIMIT $limit";
     $rows = [];
     $res = mysqli_query($conn, $sql);
     if ($res) {
@@ -580,14 +645,32 @@ function getNotifications($adminUid, $limit = 10)
     }
     return $rows;
 }
-
+if (!function_exists('getTeacherProfileByUserId')) {
+    function getTeacherProfileByUserId($uid)
+    {
+        global $conn;
+        $uid = (int)$uid;
+        if (!isset($conn)) {
+            // function.php is inside the connection/ folder; include the sibling connection.php
+            require_once __DIR__ . '/connection.php';
+        }
+        $sql = "SELECT user_id, full_name, profile_picture, bio, years_experience, expected_salary, address, subject, cv, contact_email, contact_phone FROM teacher_profiles WHERE user_id = $uid LIMIT 1";
+        $res = isset($conn) ? mysqli_query($conn, $sql) : false;
+        if ($res && mysqli_num_rows($res) === 1) {
+            $row = mysqli_fetch_assoc($res);
+            mysqli_free_result($res);
+            return $row;
+        }
+        return null;
+    }
+}
 function getNotificationById($id, $adminUid)
 {
     global $conn;
     ensureNotificationsTable();
     $id = (int)$id;
     $adminUid = (int)$adminUid;
-    $res = mysqli_query($conn, "SELECT * FROM notifications WHERE id = $id AND uid = $adminUid LIMIT 1");
+    $res = mysqli_query($conn, "SELECT * FROM notifications WHERE id = $id AND user_id = $adminUid LIMIT 1");
     if ($res && mysqli_num_rows($res) === 1) return mysqli_fetch_assoc($res);
     return null;
 }
@@ -598,7 +681,12 @@ function markNotificationRead($id, $adminUid)
     ensureNotificationsTable();
     $id = (int)$id;
     $adminUid = (int)$adminUid;
-    $sql = "UPDATE notifications SET is_read = 1 WHERE id = $id AND uid = $adminUid";
+    $schema = notifications_read_schema();
+    $col = $schema['col'];
+    $mode = $schema['mode'];
+    $set = ($mode === 'timestamp') ? "$col = NOW()" : "$col = 1";
+    $cond = ($mode === 'timestamp') ? "$col IS NULL" : "$col = 0";
+    $sql = "UPDATE notifications SET $set WHERE id = $id AND user_id = $adminUid AND $cond";
     return mysqli_query($conn, $sql) ? true : false;
 }
 

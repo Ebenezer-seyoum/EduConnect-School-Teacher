@@ -1,4 +1,5 @@
 <?php
+include 'adminHeader.php';
 // Ensure session exists (adminHeader.php normally starts it)
 if (!isset($_SESSION)) {
     session_start();
@@ -221,3 +222,4 @@ if (isset($_POST['vacancy_form']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <!-- Removed edit, delete, and view buttons. Use sidebar for navigation. -->
 </form>
+<?php include 'adminFooter.php'; ?>

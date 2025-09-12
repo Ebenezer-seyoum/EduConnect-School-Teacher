@@ -59,7 +59,7 @@ $activePage = isset($_GET['page']) ? $_GET['page'] : 'vacancies';
               <span class="hide-menu">School Vacancies</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link d-flex align-items-center gap-3" href="./index.php?page=vacancies&tab=post">
+              <a class="sidebar-link d-flex align-items-center gap-3" href="./post_vacancy.php">
                 <i class="ti ti-square-plus"></i>
                 <span class="hide-menu">Post Vacancy</span>
               </a>
